@@ -11,6 +11,8 @@ Aplikace pro správu faktur a dalších dokumentů pro firmy.
 
 Pár ukázek kodu naleznete i na https://github.com/dnatron
 
+Ukázku kodu vytvořil https://www.dnatron.com/
+
 ## Spuštění aplikace
 
 ```bash
