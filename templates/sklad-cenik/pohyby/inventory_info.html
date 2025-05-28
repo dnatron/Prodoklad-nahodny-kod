@@ -1,0 +1,29 @@
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="text-center p-3 rounded bg-light">
+            <i class="bi bi-boxes text-primary fs-4 mb-2"></i>
+            <h6 class="fw-bold mb-1">Celkové množství</h6>
+            <span class="fs-5">
+                {{ "{:.2f}".format(zustatek_mnozstvi) }}
+            </span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="text-center p-3 rounded bg-light">
+            <i class="bi bi-bookmark-check text-warning fs-4 mb-2"></i>
+            <h6 class="fw-bold mb-1">Rezervované množství</h6>
+            <span class="fs-5">
+                {{ "{:.2f}".format(rezervovane_mnozstvi) }}
+            </span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="text-center p-3 rounded bg-light">
+            <i class="bi bi-check-circle text-success fs-4 mb-2"></i>
+            <h6 class="fw-bold mb-1">Dostupné množství</h6>
+            <span class="fs-5">
+                {{ "{:.2f}".format(dostupne_mnozstvi) }}
+            </span>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+{% if pohyby_data %}
+{% for pohyb_dict in pohyby_data %}
+{% with pohyb=pohyb_dict.pohyb, sklad=pohyb_dict.sklad, produkt=pohyb_dict.produkt, cilovy_sklad=pohyb_dict.cilovy_sklad, uzivatel=pohyb_dict.uzivatel %}
+    {% include "sklad-cenik/pohyby/pohyby_row.html" %}
+{% endwith %}
+{% endfor %}
+{% else %}
+<tr>
+    <td colspan="6" class="text-center">Žádné skladové pohyby nebyly nalezeny</td>
+</tr>
+{% endif %}

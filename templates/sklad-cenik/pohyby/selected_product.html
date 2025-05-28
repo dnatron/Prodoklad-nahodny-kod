@@ -1,0 +1,23 @@
+{% if produkt %}
+<div class="input-group">
+    <input type="text" class="form-control" value="{{ produkt.nazev }} ({{ produkt.katalogove_cislo }})" readonly>
+    <input type="hidden" id="produkt_id" name="produkt_id" value="{{ produkt.id }}" required>
+    <input type="hidden" data-jednotka="{{ produkt.jednotka }}">
+    <input type="hidden" id="selected_sklad_id" value="{{ sklad.id }}">
+    <input type="hidden" id="inventory_data" 
+           data-zustatek="{{ '{:.2f}'.format(zustatek_mnozstvi) }}" 
+           data-rezervovane="{{ '{:.2f}'.format(rezervovane_mnozstvi) }}" 
+           data-dostupne="{{ '{:.2f}'.format(dostupne_mnozstvi) }}">
+    <button type="button" class="btn btn-outline-secondary" id="changeProductBtn">
+        <i class="bi bi-pencil"></i> Změnit
+    </button>
+</div>
+{% else %}
+<div class="input-group">
+    <input type="text" class="form-control" placeholder="Žádný produkt není vybrán" readonly>
+    <input type="hidden" id="produkt_id" name="produkt_id" required>
+    <button type="button" class="btn btn-outline-primary" id="selectProductBtn">
+        <i class="bi bi-plus"></i> Vybrat produkt
+    </button>
+</div>
+{% endif %}

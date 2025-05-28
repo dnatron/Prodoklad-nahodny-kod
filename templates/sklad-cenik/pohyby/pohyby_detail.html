@@ -1,0 +1,240 @@
+<div class="modal-header">
+    <h5 class="modal-title text-warning">
+        <i class="bi bi-box-seam me-2"></i>Detail skladového pohybu
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <!-- Hlavní informace -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="mb-0 fw-bold text-info">
+                <i class="bi bi-info-circle me-2"></i>Základní informace
+            </h6>
+            <div>
+                {% if pohyb.typ_pohybu.name == 'PRIJEM' %}
+                    <span class="badge bg-success">Příjem</span>
+                {% elif pohyb.typ_pohybu.name == 'VYDEJ' %}
+                    <span class="badge bg-danger">Výdej</span>
+                {% elif pohyb.typ_pohybu.name == 'PRESUN' %}
+                    <span class="badge bg-primary">Přesun</span>
+                {% elif pohyb.typ_pohybu.name == 'INVENTURA_PRIJEM' %}
+                    <span class="badge bg-info">Inventura - Příjem</span>
+                {% elif pohyb.typ_pohybu.name == 'INVENTURA_VYDEJ' %}
+                    <span class="badge bg-warning">Inventura - Výdej</span>
+                {% else %}
+                    <span class="badge bg-secondary">{{ pohyb.typ_pohybu.name }}</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar-event text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Datum vytvoření</small>
+                            <span>{{ pohyb.vytvoreno.strftime('%d.%m.%Y %H:%M') }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% if pohyb.upraveno %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-pencil-square text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Naposledy upraveno</small>
+                            <span>{{ pohyb.upraveno.strftime('%d.%m.%Y %H:%M') }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Uživatel</small>
+                            <span>{{ pohyb.first_last_name or 'Neznámý' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-hash text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">ID pohybu</small>
+                            <span>{{ pohyb.id }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-building text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Firma ID</small>
+                            <span>{{ pohyb.firma_id }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Informace o produktu a skladu -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header">
+            <h6 class="mb-0 fw-bold text-info">
+                <i class="bi bi-box me-2"></i>Produkt a sklad
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-tag text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Produkt</small>
+                            <span class="fw-medium">{{ produkt.nazev }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-upc text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Kód produktu</small>
+                            <span>{{ produkt.kod }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-house-door text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Zdrojový sklad</small>
+                            <span>{{ sklad.nazev }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% if cilovy_sklad %}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-arrow-right-circle text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Cílový sklad</small>
+                            <span>{{ cilovy_sklad.nazev }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-123 text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Množství</small>
+                            <span class="fw-medium">
+                                {% if pohyb.mnozstvi % 1 == 0 %}
+                                    {{ (pohyb.mnozstvi)|int }}
+                                {% else %}
+                                    {{ '%0.2f'|format(pohyb.mnozstvi) }} 
+                                {% endif %} {{ pohyb.jednotka if pohyb.jednotka else '' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% if pohyb.cislo_dokladu %}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-text text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Číslo dokladu</small>
+                            <span>{{ pohyb.cislo_dokladu }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if pohyb.typ_dokladu %}
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark text-primary me-2"></i>
+                        <div>
+                            <small class="text-muted d-block">Typ dokladu</small>
+                            <span>{{ pohyb.typ_dokladu.value }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stav zásob po provedení pohybu -->
+    <div class="card mb-4 border-0 shadow-sm">
+        <div class="card-header">
+            <h6 class="mb-0 fw-bold text-info">
+                <i class="bi bi-graph-up me-2"></i>Stav zásob po provedení pohybu
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="text-center p-3 rounded">
+                        <i class="bi bi-boxes text-primary fs-4 mb-2"></i>
+                        <h6 class="fw-bold mb-1">Celkové množství</h6>
+                        <span class="fs-5">
+                            {% if pohyb.zustatek_mnozstvi % 1 == 0 %}
+                                {{ (pohyb.zustatek_mnozstvi)|int }}
+                            {% else %}
+                                {{ '%0.2f'|format(pohyb.zustatek_mnozstvi) }} 
+                            {% endif %} {{ pohyb.jednotka if pohyb.jednotka else '' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3 rounded">
+                        <i class="bi bi-bookmark-check text-warning fs-4 mb-2"></i>
+                        <h6 class="fw-bold mb-1">Rezervované množství</h6>
+                        <span class="fs-5">
+                            {% if pohyb.rezervovane_mnozstvi % 1 == 0 %}
+                                {{ (pohyb.rezervovane_mnozstvi)|int }}
+                            {% else %}
+                                {{ '%0.2f'|format(pohyb.rezervovane_mnozstvi) }} 
+                            {% endif %} {{ pohyb.jednotka if pohyb.jednotka else '' }}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center p-3 rounded">
+                        <i class="bi bi-check-circle text-success fs-4 mb-2"></i>
+                        <h6 class="fw-bold mb-1">Dostupné množství</h6>
+                        <span class="fs-5">
+                            {% if pohyb.dostupne_mnozstvi % 1 == 0 %}
+                                {{ (pohyb.dostupne_mnozstvi)|int }}
+                            {% else %}
+                                {{ '%0.2f'|format(pohyb.dostupne_mnozstvi) }} 
+                            {% endif %} {{ pohyb.jednotka if pohyb.jednotka else '' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if pohyb.popis %}
+    <div class="card mb-0 border-0 shadow-sm">
+        <div class="card-header">
+            <h6 class="mb-0 fw-bold text-info">
+                <i class="bi bi-chat-left-text me-2"></i>Popis
+            </h6>
+        </div>
+        <div class="card-body">
+            <p class="mb-0">{{ pohyb.popis }}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="bi bi-x-lg me-1"></i>Zavřít
+    </button>
+</div>

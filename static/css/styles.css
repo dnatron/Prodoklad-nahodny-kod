@@ -1,0 +1,392 @@
+:root {
+    --sidebar-width: 210px;
+    --sidebar-mini-width: 50px;
+    --sidebar-bg: #363a41;
+    --sidebar-hover: #282b30;
+    --sidebar-active: #20242a;
+    --sidebar-text: #b8bbbe;
+    --sidebar-active-text: #fff;
+    --prestashop-blue: #25b9d7;
+    --prestashop-dark: #4a4a4a;
+}
+
+/* Sidebar base styles */
+#sidebar {
+    width: var(--sidebar-width);
+    height: calc(100vh - 50px);
+    position: fixed;
+    top: 50px;
+    left: 0;
+    background: var(--sidebar-bg);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    font-size: 0.875rem;
+}
+
+/* Mini sidebar styles (desktop) */
+@media (min-width: 992px) {
+    .mini-sidebar #sidebar {
+        width: var(--sidebar-mini-width);
+        text-align: center;
+        overflow: visible;
+    }
+
+    .mini-sidebar .sidebar-header {
+        padding: 0.75rem 0;
+    }
+    
+    .mini-sidebar .sidebar-header h2 {
+        font-size: 0;
+        margin: 0;
+        height: 30px;
+    }
+    
+    .mini-sidebar .sidebar-header h2::after {
+        content: '\F5D2';
+        font-family: "bootstrap-icons";
+        font-size: 1.5rem;
+        display: inline-block;
+    }
+
+    .mini-sidebar #sidebar:hover {
+        width: var(--sidebar-width);
+        text-align: left;
+    }
+    
+    .mini-sidebar #sidebar:hover .sidebar-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .mini-sidebar #sidebar:hover .sidebar-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .mini-sidebar #sidebar:hover .sidebar-header h2::after {
+        content: '';
+        display: none;
+    }
+
+    .mini-sidebar #sidebar .sidebar-header h5,
+    .mini-sidebar #sidebar .sidebar-section-header,
+    .mini-sidebar #sidebar .sidebar-link span,
+    .mini-sidebar #sidebar .toggle-icon {
+        opacity: 0;
+        transition: opacity 0.2s;
+        visibility: hidden;
+        display: none;
+    }
+
+    .mini-sidebar #sidebar:hover .sidebar-header h5,
+    .mini-sidebar #sidebar:hover .sidebar-section-header,
+    .mini-sidebar #sidebar:hover .sidebar-link span,
+    .mini-sidebar #sidebar:hover .toggle-icon {
+        opacity: 1;
+        visibility: visible;
+        display: inline-block;
+    }
+
+    .mini-sidebar #sidebar .sidebar-link {
+        padding: 0.7rem 0;
+        justify-content: center;
+        border-left: none;
+        white-space: nowrap;
+    }
+    
+    /* Vylepšení pozice ikon v mini režimu */
+    .mini-sidebar #sidebar .sidebar-link i {
+        margin: 0 auto;
+        font-size: 1.25rem;
+        width: auto;
+        text-align: center;
+    }
+
+    .mini-sidebar #sidebar:hover .sidebar-link {
+        padding: 0.6rem 1rem;
+        justify-content: flex-start;
+        border-left: 3px solid transparent;
+    }
+    
+    /* Obnovení výchozího postavení ikon při hover */
+    .mini-sidebar #sidebar:hover .sidebar-link i {
+        margin: 0;
+        margin-right: 10px;
+        font-size: 1.1rem;
+        width: 20px;
+        text-align: left;
+    }
+
+    .mini-sidebar #content {
+        margin-left: var(--sidebar-mini-width);
+    }
+    
+    /* Pro správné vycentrování v mini režimu */
+    .mini-sidebar .sidebar-section-header {
+        height: 0;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+        display: none;
+    }
+    
+    .mini-sidebar #sidebar:hover .sidebar-section-header {
+        height: auto;
+        overflow: visible;
+        padding: 0.5rem 1rem;
+        margin: 0.5rem 0 0;
+        display: block;
+    }
+    
+    /* Úprava submenu v mini režimu */
+    .mini-sidebar .sidebar-submenu {
+        position: absolute;
+        left: var(--sidebar-mini-width);
+        min-width: 200px;
+        background: var(--sidebar-hover);
+        border-radius: 0 4px 4px 0;
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+        display: none;
+    }
+    
+    .mini-sidebar .sidebar-link:hover + .sidebar-submenu,
+    .mini-sidebar .sidebar-submenu:hover {
+        display: block;
+    }
+    
+    .mini-sidebar #sidebar:hover .sidebar-submenu {
+        position: static;
+        box-shadow: none;
+        border-radius: 0;
+        min-width: auto;
+    }
+}
+
+/* Mobile sidebar styles */
+@media (max-width: 991.98px) {
+    #sidebar {
+        left: calc(-1 * var(--sidebar-width));
+        box-shadow: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .mobile-menu-open #sidebar {
+        left: 0;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+    }
+
+    #content {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+
+    .mobile-menu-open::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    #sidebar {
+        z-index: 1001;
+    }
+}
+
+/* Content area */
+#content {
+    margin-left: var(--sidebar-width);
+    transition: margin 0.3s ease;
+    min-height: 100vh;
+    background: transparent;
+    padding-top: 1rem;
+}
+
+/* Mini sidebar content adjustment */
+.mini-sidebar #content {
+    margin-left: var(--sidebar-mini-width);
+}
+
+/* Mobile content adjustment */
+@media (max-width: 991.98px) {
+    #content {
+        margin-left: 0 !important;
+    }
+}
+
+/* Navbar styles */
+.navbar {
+    background: white;
+    box-shadow: 0 0 4px rgba(0,0,0,.1);
+    padding: 0.5rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.navbar-nav .nav-link {
+    color: var(--prestashop-dark);
+    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.2s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--prestashop-blue);
+}
+
+.navbar-nav .nav-link i {
+    font-size: 1.1rem;
+}
+
+#sidebarToggle,
+#mobileMenuToggle {
+    background: none;
+    border: none;
+    color: var(--prestashop-dark);
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#sidebarToggle:hover,
+#mobileMenuToggle:hover {
+    color: var(--prestashop-blue);
+}
+
+#sidebarToggle i,
+#mobileMenuToggle i {
+    font-size: 1.5rem;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        background: white;
+        padding: 1rem;
+        border-radius: 0.25rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-top: 0.5rem;
+    }
+    
+    .navbar-nav .nav-link {
+        padding: 0.75rem 1rem;
+    }
+}
+
+.sidebar-header {
+    padding: 0.75rem 1rem;
+    background: var(--sidebar-hover);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-header h5 {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.sidebar-content {
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.sidebar-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+    background: var(--sidebar-bg);
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: var(--sidebar-hover);
+    border-radius: 2px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-link {
+    color: var(--sidebar-text);
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    position: relative;
+    font-weight: 400;
+}
+
+.sidebar-link:hover {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-active-text);
+    border-left-color: var(--prestashop-blue);
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    background: var(--sidebar-active);
+    color: var(--sidebar-active-text);
+    border-left-color: var(--prestashop-blue);
+    font-weight: 500;
+}
+
+.sidebar-link i {
+    width: 20px;
+    margin-right: 10px;
+    font-size: 1.1rem;
+    color: inherit;
+}
+
+.sidebar-link .toggle-icon {
+    position: absolute;
+    right: 1rem;
+    transition: transform 0.3s;
+    font-size: 0.75rem;
+}
+
+[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.sidebar-submenu {
+    list-style: none;
+    padding: 0;
+    background: var(--sidebar-hover);
+    margin: 0;
+}
+
+.sidebar-submenu .sidebar-link {
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    font-size: 0.813rem;
+    color: var(--sidebar-text);
+}
+
+.sidebar-submenu .sidebar-link:hover,
+.sidebar-submenu .sidebar-link.active {
+    background: var(--sidebar-active);
+    color: var(--sidebar-active-text);
+}
+
+/* PrestaShop-style section headers */
+.sidebar-section-header {
+    color: var(--sidebar-text);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    padding: 1rem 1rem 0.5rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}

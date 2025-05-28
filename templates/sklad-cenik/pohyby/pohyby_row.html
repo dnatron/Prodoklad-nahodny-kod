@@ -1,0 +1,34 @@
+<tr data-pohyb-id="{{ pohyb.id }}">
+    <td>{{ pohyb.vytvoreno.strftime('%d.%m.%Y %H:%M') }}</td>
+    <td>{{ sklad.nazev }}</td>
+    <td>{{ produkt.nazev }}</td>
+    <td>
+        {% if pohyb.typ_pohybu.name == 'PRIJEM' %}
+            <span class="badge bg-success">Příjem</span>
+        {% elif pohyb.typ_pohybu.name == 'VYDEJ' %}
+            <span class="badge bg-danger">Výdej</span>
+        {% elif pohyb.typ_pohybu.name == 'REZERVACE' %}
+            <span class="badge bg-primary">Rezervace</span>
+        {% else %}
+            <span class="badge bg-secondary">{{ pohyb.typ_pohybu.name }}</span>
+        {% endif %}
+    </td>
+    <td>
+        {% if pohyb.mnozstvi % 1 == 0 %}
+            {{ (pohyb.mnozstvi)|int }}
+        {% else %}
+            {{ '%0.2f'|format(pohyb.mnozstvi) }} 
+        {% endif %} {{ pohyb.jednotka if pohyb.jednotka else '' }}
+    </td>
+    <td>
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-info"
+                    hx-get="{{ url_for('get_pohyb_detail', pohyb_id=pohyb.id) }}"
+                    hx-target="#pohybDetailModal .modal-content"
+                    data-bs-toggle="modal"
+                    data-bs-target="#pohybDetailModal">
+                <i class="bi bi-eye"></i>
+            </button>
+        </div>
+    </td>
+</tr>

@@ -1,0 +1,163 @@
+<!-- Produkt Select Modal for Skladové pohyby -->
+<div class="modal fade" id="produktSelectModal" tabindex="-1" aria-labelledby="produktSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header text-warning">
+                <h5 class="modal-title" id="produktSelectModalLabel">Vybrat produkt</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Search -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="sklad_id" class="form-label">Sklad *</label>
+                        <select class="form-select" 
+                                id="sklad_id" 
+                                name="sklad_id" 
+                                required
+                                hx-get="{{ url_for('search_produkty_for_pohyb') }}"
+                                hx-target="#produktTableBody"
+                                hx-trigger="change"
+                                hx-include="#produktSearch">
+                            {% for sklad in sklady %}
+                            <option value="{{ sklad.id }}" {% if sklad_id and sklad_id == sklad.id %}selected{% elif not sklad_id and sklad.vychozi %}selected{% endif %}>
+                                {{ sklad.nazev }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-8">
+                        <label for="produktSearch" class="form-label">Hledat produkt</label>
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="produktSearch" 
+                                   placeholder="Hledat produkt..."
+                                   name="search">
+                            <button class="btn btn-outline-secondary" 
+                                   type="button" 
+                                   hx-get="{{ url_for('search_produkty_for_pohyb') }}" 
+                                   hx-target="#produktTableBody" 
+                                   hx-include="#produktSearch, #sklad_id">
+                                <i class="bi bi-search"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary" type="button" onclick="clearProduktSearch()">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Results -->
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-info">Název</th>
+                                <th class="text-info">Katalogové číslo</th>
+                                <th class="text-info">Jednotka</th>
+                                <th class="text-info">Skladem</th>
+                                <th class="text-info"><i class="bi bi-gear"></i> Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody id="produktTableBody">
+                            {% if produkty %}
+                                {% for produkt in produkty %}
+                                <tr>
+                                    <td>{{ produkt.nazev }}</td>
+                                    <td>{{ produkt.katalogove_cislo }}</td>
+                                    <td>{{ produkt.jednotka }}</td>
+                                    <td>{{ produkt.mnozstvi_skladem|default(0, true) }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary"
+                                                hx-post="{{ url_for('select_produkt_for_pohyb', produkt_id=produkt.id) }}"
+                                                hx-target="#selected-product-container"
+                                                hx-include="#sklad_id"
+                                                data-bs-dismiss="modal">
+                                            <i class="bi bi-check-circle"></i> Vybrat
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                
+                                <!-- Pagination -->
+                                {% if total_pages > 1 %}
+                                <tr>
+                                    <td colspan="5">
+                                        <nav aria-label="Stránkování produktů">
+                                            <ul class="pagination justify-content-center mb-0">
+                                                <!-- Previous button -->
+                                                <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+                                                    <a class="page-link" 
+                                                       href="#" 
+                                                       hx-get="{{ url_for('search_produkty_for_pohyb') }}?page={{ current_page - 1 }}&search={{ search }}"
+                                                       hx-target="#produktTableBody"
+                                                       {% if current_page == 1 %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                                        Předchozí
+                                                    </a>
+                                                </li>
+                                                
+                                                <!-- Page numbers -->
+                                                {% for p in range(1, total_pages + 1) %}
+                                                    {% if p == current_page %}
+                                                        <li class="page-item active">
+                                                            <span class="page-link">{{ p }}</span>
+                                                        </li>
+                                                    {% else %}
+                                                        <li class="page-item">
+                                                            <a class="page-link" 
+                                                               href="#" 
+                                                               hx-get="{{ url_for('search_produkty_for_pohyb') }}?page={{ p }}&search={{ search }}"
+                                                               hx-target="#produktTableBody">
+                                                                {{ p }}
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                
+                                                <!-- Next button -->
+                                                <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+                                                    <a class="page-link" 
+                                                       href="#" 
+                                                       hx-get="{{ url_for('search_produkty_for_pohyb') }}?page={{ current_page + 1 }}&search={{ search }}"
+                                                       hx-target="#produktTableBody"
+                                                       {% if current_page == total_pages %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                                        Další
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        <div id="loading-indicator" class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Načítám...</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zavřít</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function clearProduktSearch() {
+    document.getElementById('produktSearch').value = '';
+    htmx.ajax('GET', '{{ url_for("search_produkty_for_pohyb") }}', {
+        target: '#produktTableBody',
+        values: {
+            'sklad_id': document.getElementById('sklad_id').value
+        }
+    });
+}
+</script>

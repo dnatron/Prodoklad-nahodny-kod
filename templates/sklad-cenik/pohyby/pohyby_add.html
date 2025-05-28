@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %}Přidat skladový pohyb{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-warning">{% if pohyb %}Upravit{% else %}Přidat{% endif %} skladový pohyb</h2>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form id="pohybForm" 
+                  action="{% if pohyb %}{{ url_for('edit_pohyb', pohyb_id=pohyb.id) }}{% else %}{{ url_for('add_pohyb') }}{% endif %}"
+                  method="POST"
+                  hx-post="{% if pohyb %}{{ url_for('edit_pohyb', pohyb_id=pohyb.id) }}{% else %}{{ url_for('add_pohyb') }}{% endif %}"
+                  hx-trigger="submit"
+                  hx-swap="none">
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="typ_pohybu" class="form-label">Směr *</label>
+                        <select class="form-select" id="typ_pohybu" name="typ_pohybu" required>
+                            {% for typ in typy_pohybu %}
+                            <option value="{{ typ.name }}" {% if pohyb and pohyb.typ_pohybu.name == typ.name %}selected{% endif %}>
+                                {{ typ.value }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="mnozstvi" class="form-label">Množství *</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="mnozstvi" name="mnozstvi" step="0.01" min="0" required>
+                            <span class="input-group-text" id="jednotka-text">{{ produkt.jednotka if produkt and produkt.jednotka else '' }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="sklad_id" class="form-label">Sklad *</label>
+                        <select class="form-select" id="sklad_id" name="sklad_id" required>
+                            {% for sklad in sklady %}
+                            <option value="{{ sklad.id }}" {% if pohyb and pohyb.sklad_id == sklad.id %}selected{% elif not pohyb and default_sklad_id and sklad.id == default_sklad_id %}selected{% endif %}>
+                                {{ sklad.nazev }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="produkt_id" class="form-label">Položka *</label>
+                        <div id="selected-product-container">
+                            {% if produkt %}
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="{{ produkt.nazev }} ({{ produkt.kod }})" readonly>
+                                <input type="hidden" id="produkt_id" name="produkt_id" value="{{ produkt.id }}" required>
+                                <button type="button" class="btn btn-outline-secondary" id="changeProductBtn">
+                                    <i class="bi bi-pencil"></i> Změnit
+                                </button>
+                            </div>
+                            {% else %}
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Žádný produkt není vybrán" readonly>
+                                <input type="hidden" id="produkt_id" name="produkt_id" required>
+                                <button type="button" class="btn btn-outline-primary" id="selectProductBtn">
+                                    <i class="bi bi-plus"></i> Vybrat
+                                </button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stav zásob po provedení pohybu -->
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-header">
+                        <h6 class="mb-0 fw-bold text-info text-center">
+                            <i class="bi bi-graph-up me-2"></i>Stav zásob položky na vybraném skladě:
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="text-center p-3 rounded">
+                                    <i class="bi bi-boxes text-primary fs-4 mb-2"></i>
+                                    <h6 class="fw-bold mb-1">Celkové množství</h6>
+                                    <span class="fs-5" id="zustatek">
+                                        0
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 rounded">
+                                    <i class="bi bi-bookmark-check text-warning fs-4 mb-2"></i>
+                                    <h6 class="fw-bold mb-1">Rezervované množství</h6>
+                                    <span class="fs-5" id="rezervovane">
+                                        0
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3 rounded">
+                                    <i class="bi bi-check-circle text-success fs-4 mb-2"></i>
+                                    <h6 class="fw-bold mb-1">Dostupné množství</h6>
+                                    <span class="fs-5" id="dostupne">
+                                        0
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="cislo_dokladu" class="form-label">Doklad (číslo, kod)</label>
+                        <input type="text" class="form-control" id="cislo_dokladu" name="cislo_dokladu" maxlength="50"
+                               value="{{ pohyb.cislo_dokladu if pohyb and pohyb.cislo_dokladu else '' }}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="typ_dokladu" class="form-label">Typ dokladu</label>
+                        <select class="form-select" id="typ_dokladu" name="typ_dokladu">
+                            <option value="">-- Vyberte typ dokladu --</option>
+                            {% for typ in typy_dokladu %}
+                            <option value="{{ typ.name }}" {% if pohyb and pohyb.typ_dokladu and pohyb.typ_dokladu.name == typ.name %}selected{% endif %}>
+                                {{ typ.value }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="popis" class="form-label">Popis (Poznámka)</label>
+                    <textarea class="form-control" id="popis" name="popis" rows="3" maxlength="500">{{ pohyb.popis if pohyb and pohyb.popis else '' }}</textarea>
+                </div>
+                
+                <!-- Hidden field for doklad_id if available -->
+                {% if pohyb and pohyb.doklad_id %}
+                <input type="hidden" name="doklad_id" value="{{ pohyb.doklad_id }}">
+                {% endif %}
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('list_sklad_pohyby') }}" class="btn btn-secondary">Zrušit</a>
+                    <button type="submit" class="btn btn-primary">
+                        {% if pohyb %}Upravit{% else %}Přidat{% endif %} skladový pohyb
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Include the product selection modal -->
+<div id="modalContainer">
+    {% include "sklad-cenik/pohyby/product_select_modal.html" %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize buttons for opening the product selection modal
+    const selectProductBtn = document.getElementById('selectProductBtn');
+    const changeProductBtn = document.getElementById('changeProductBtn');
+    
+    // Add event listeners to buttons
+    if (selectProductBtn) {
+        selectProductBtn.addEventListener('click', openProduktSelectModal);
+    }
+    
+    if (changeProductBtn) {
+        changeProductBtn.addEventListener('click', openProduktSelectModal);
+    }
+    
+    // Function to open the product selection modal
+    function openProduktSelectModal() {
+        // Get the modal element
+        const modalElement = document.getElementById('produktSelectModal');
+        
+        // Create a new Bootstrap modal instance
+        const modal = new bootstrap.Modal(modalElement);
+        
+        // Show the modal
+        modal.show();
+        
+        // Load products into the modal if not already loaded
+        if (document.querySelectorAll('#produktTableBody tr').length <= 1) {
+            htmx.ajax('GET', '{{ url_for("get_produkt_select_modal_for_pohyb") }}', {
+                target: '#produktTableBody'
+            });
+        }
+    }
+    
+    // Update the unit text when a product is selected
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'selected-product-container') {
+            // Get the unit from the data attribute
+            const jednotka = event.detail.target.querySelector('[data-jednotka]');
+            if (jednotka) {
+                document.getElementById('jednotka-text').textContent = jednotka.getAttribute('data-jednotka');
+            }
+            
+            // Update the warehouse dropdown with the selected warehouse from the modal
+            const selectedSkladId = event.detail.target.querySelector('#selected_sklad_id');
+            if (selectedSkladId) {
+                const skladId = selectedSkladId.value;
+                const skladSelect = document.getElementById('sklad_id');
+                if (skladSelect && skladId) {
+                    skladSelect.value = skladId;
+                }
+            }
+            
+            // Update inventory information if available
+            const inventoryData = event.detail.target.querySelector('#inventory_data');
+            if (inventoryData) {
+                updateInventoryDisplay(
+                    inventoryData.getAttribute('data-zustatek'),
+                    inventoryData.getAttribute('data-rezervovane'),
+                    inventoryData.getAttribute('data-dostupne')
+                );
+            } else {
+                // Reset inventory display if no data
+                updateInventoryDisplay('0', '0', '0');
+            }
+            
+            // Re-initialize the buttons after HTMX swap
+            const newSelectBtn = document.getElementById('selectProductBtn');
+            const newChangeBtn = document.getElementById('changeProductBtn');
+            
+            if (newSelectBtn) {
+                newSelectBtn.addEventListener('click', openProduktSelectModal);
+            }
+            
+            if (newChangeBtn) {
+                newChangeBtn.addEventListener('click', openProduktSelectModal);
+            }
+        }
+    });
+    
+    // Function to update inventory display
+    function updateInventoryDisplay(zustatek, rezervovane, dostupne) {
+        const inventoryBoxes = document.querySelectorAll('.card-body .row .col-md-4 .text-center .fs-5');
+        if (inventoryBoxes && inventoryBoxes.length >= 3) {
+            inventoryBoxes[0].textContent = parseFloat(zustatek).toFixed(2);
+            inventoryBoxes[1].textContent = parseFloat(rezervovane).toFixed(2);
+            inventoryBoxes[2].textContent = parseFloat(dostupne).toFixed(2);
+        }
+    }
+    
+    // Add event listener for warehouse selection change to update inventory data
+    document.getElementById('sklad_id').addEventListener('change', function() {
+        const produktId = document.getElementById('produkt_id');
+        if (produktId && produktId.value) {
+            // Get inventory data for the selected product and warehouse
+            const skladId = this.value;
+            const url = `/sklad-pohyby/get-inventory-info?produkt_id=${produktId.value}&sklad_id=${skladId}`;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Extract inventory data from the response and update display
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const inventoryBoxes = doc.querySelectorAll('.col-md-4 .text-center .fs-5');
+                    
+                    if (inventoryBoxes && inventoryBoxes.length >= 3) {
+                        updateInventoryDisplay(
+                            inventoryBoxes[0].textContent.trim(),
+                            inventoryBoxes[1].textContent.trim(),
+                            inventoryBoxes[2].textContent.trim()
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching inventory data:', error);
+                    updateInventoryDisplay('0', '0', '0');
+                });
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{% block extrajs %}
+{% endblock %}

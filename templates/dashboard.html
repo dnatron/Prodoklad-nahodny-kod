@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ email }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Welcome Card -->
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="mb-3 text-warning"><i class="bi bi-hand-thumbs-up-fill"></i>Vítejte zpět!</h2>
+                    <p class="card-text text-muted"> 
+                        Zde je váš osobní přehled</p>
+                    {% if request.session.get('selected_firma_name') %}
+                    <p class="card-text">
+                        <strong class="text-primary">Vybraná firma:</strong> 
+                        <h4><span class="badge bg-secondary">{{ request.session.get('selected_firma_name') }}</span></h4>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Stav účtu</h5>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Role
+                            <span class="badge bg-info rounded-pill">
+                                {% if request.session.get('is_admin') %}
+                                    Admin
+                                {% elif request.session.get('is_subuser') %}
+                                    Poduzivatel
+                                {% else %}
+                                    Uzivatel
+                                {% endif %}
+                            </span>
+                        </div>
+                        {% if not request.session.get('is_admin') %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Company
+                            <span class="badge bg-secondary rounded-pill">
+                                {{ request.session.get('selected_firma_name', 'Not Selected') }}
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Rychle akce</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="/prodej-faktury-vydane/add" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Vytvořit fakturu
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <a href="/kontakty?openModal=true" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Přidat kontakt
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                        <a href="/sklad-cenik/produkty?openModal=true" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Přidat produkt
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Info -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">System Info</h5>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Status
+                            <span class="badge bg-success rounded-pill">Active</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            Version
+                            <span class="badge bg-info rounded-pill">1.0.0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

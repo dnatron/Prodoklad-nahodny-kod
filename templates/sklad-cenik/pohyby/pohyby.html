@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Správa skladových pohybů{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-3 text-warning"><i class="bi bi-arrow-left-right"></i> Správa skladových pohybů</h2>
+
+    <!-- Add Pohyb Button - Changed to navigate to a page instead of opening a modal -->
+    <div class="mb-3">
+        <a href="{{ url_for('get_add_pohyb_page') }}" class="btn btn-sm btn-primary">
+            <i class="bi bi-plus-lg"></i>
+            Přidat skladový pohyb
+        </a>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Filtry</h5>
+        </div>
+        <div class="card-body">
+            <form hx-get="{{ url_for('list_sklad_pohyby') }}" hx-target="#pohyby-table-body" class="row g-3">
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Hledat</label>
+                    <input type="text" class="form-control" id="search" name="search" value="{{ search }}" 
+                           placeholder="Číslo dokladu, popis...">
+                </div>
+                <div class="col-md-3">
+                    <label for="sklad_id" class="form-label">Sklad</label>
+                    <select class="form-select" id="sklad_id" name="sklad_id">
+                        <option value="">Všechny sklady</option>
+                        {% for sklad in sklady %}
+                        <option value="{{ sklad.id }}" {% if selected_sklad_id == sklad.id %}selected{% endif %}>
+                            {{ sklad.nazev }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="typ_pohybu" class="form-label">Typ pohybu</label>
+                    <select class="form-select" id="typ_pohybu" name="typ_pohybu">
+                        <option value="">Všechny typy</option>
+                        {% for typ in typy_pohybu %}
+                        <option value="{{ typ.name }}" {% if selected_typ_pohybu == typ.name %}selected{% endif %}>
+                            {{ typ.value }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filtrovat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="message-container"></div>
+
+    <div class="card shadow">
+        <div class="card-body" id="pohyby-container">
+            <div class="table-responsive">
+                <table class="table table-hover" id="pohyby-table">
+                    <thead>
+                        <tr>
+                            <th class="text-info">Datum</th>
+                            <th class="text-info">Sklad</th>
+                            <th class="text-info">Produkt</th>
+                            <th class="text-info">Typ pohybu</th>
+                            <th class="text-info">Množství</th>
+                            <th class="text-info"><i class="bi bi-gear"></i> Akce</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pohyby-table-body" hx-target="this">
+                        {% if pohyby_data %}
+                        {% for pohyb_dict in pohyby_data %}
+                        {% with pohyb=pohyb_dict.pohyb, sklad=pohyb_dict.sklad, produkt=pohyb_dict.produkt, cilovy_sklad=pohyb_dict.cilovy_sklad, uzivatel=pohyb_dict.uzivatel %}
+                            {% include "sklad-cenik/pohyby/pohyby_row.html" %}
+                        {% endwith %}
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">Žádné skladové pohyby nebyly nalezeny</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Pohyb Detail -->
+<div class="modal fade" id="pohybDetailModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+{% if total_pages > 1 %}
+<nav aria-label="Skladové pohyby pagination" class="mt-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="text-muted">
+            Zobrazeno {{ (current_page - 1) * 10 + 1 }} až {{ [current_page * 10, total_items]|min }} z {{ total_items }} pohybů
+        </div>
+        <ul class="pagination mb-0">
+            <!-- Previous Page -->
+            <li class="page-item {% if current_page == 1 %}disabled{% endif %}">
+                <a class="page-link" 
+                   href="#"
+                   hx-get="{{ url_for('list_sklad_pohyby') }}?page={{ current_page - 1 }}&search={{ search }}&sklad_id={{ selected_sklad_id or '' }}&typ_pohybu={{ selected_typ_pohybu or '' }}"
+                   hx-target="#pohyby-table-body"
+                   {% if current_page == 1 %}tabindex="-1" aria-disabled="true"{% endif %}>
+                    Předchozí
+                </a>
+            </li>
+            
+            <!-- Page Numbers -->
+            {% set start = [current_page - 2, 1]|max %}
+            {% set end = [start + 4, total_pages + 1]|min %}
+            {% set start = [end - 4, 1]|max %}
+            
+            {% for p in range(start, end) %}
+            <li class="page-item {% if p == current_page %}active{% endif %}">
+                <a class="page-link"
+                   href="#"
+                   hx-get="{{ url_for('list_sklad_pohyby') }}?page={{ p }}&search={{ search }}&sklad_id={{ selected_sklad_id or '' }}&typ_pohybu={{ selected_typ_pohybu or '' }}"
+                   hx-target="#pohyby-table-body">
+                    {{ p }}
+                </a>
+            </li>
+            {% endfor %}
+            
+            <!-- Next Page -->
+            <li class="page-item {% if current_page == total_pages %}disabled{% endif %}">
+                <a class="page-link"
+                   href="#"
+                   hx-get="{{ url_for('list_sklad_pohyby') }}?page={{ current_page + 1 }}&search={{ search }}&sklad_id={{ selected_sklad_id or '' }}&typ_pohybu={{ selected_typ_pohybu or '' }}"
+                   hx-target="#pohyby-table-body"
+                   {% if current_page == total_pages %}tabindex="-1" aria-disabled="true"{% endif %}>
+                    Další
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+{% endif %}
+
+{% endblock %}
+
+{% block extrajs %}
+<script>
+    // Poslouchání na HTMX události
+    document.body.addEventListener('pohybAdded', function(evt) {
+        // Zavře modální okno přes Bootstrap API
+        var modal = bootstrap.Modal.getInstance(document.getElementById('pohybModal'));
+        if (modal) {
+            modal.hide();
+        }
+    });
+    
+    // Pro událost smazání pohybu
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        // Kontrola, zda jde o odpověď na smazání
+        if (evt.detail.target.closest('tr') && evt.detail.xhr.status === 200) {
+            try {
+                // Pokus o parsování odpovědi jako JSON
+                const response = JSON.parse(evt.detail.xhr.responseText);
+                if (response.showMessage) {
+                    // Nahrazení odpovědi prázdným obsahem, aby se řádek odstranil
+                    evt.detail.target.remove();
+                }
+            } catch (e) {
+                // Není JSON, necháme obsah tak jak je
+            }
+        }
+    });
+</script>
+{% endblock %}

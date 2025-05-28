@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Login</h2>
+                    
+                    <form hx-post="/login" 
+                          hx-target="body"
+                          hx-swap="outerHTML"
+                          hx-push-url="true">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" 
+                                   class="form-control" 
+                                   id="email" 
+                                   name="email" 
+                                   required
+                                   pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+                                   title="Zadejte platnou e-mailovou adresu"
+                                   minlength="5"
+                                   maxlength="50"
+                                   autocomplete="email">
+                            <div class="form-text">Zadejte svou registrovanou e-mailovou adresu</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="password" 
+                                   required
+                                   minlength="8"
+                                   maxlength="50"
+                                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&=+\-])[A-Za-z\d@$!%*?&=+\-]{8,}$"
+                                   title="Zadejte své heslo (musí obsahovat velká a malá písmena, čísla a speciální znaky včetně @$!%*?&=+-)"
+                                   autocomplete="current-password">
+                            <div class="form-text">Zadejte své heslo (musí obsahovat speciální znaky jako @$!%*?&=+-)</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <a href="/register" class="btn btn-outline-secondary">Register</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

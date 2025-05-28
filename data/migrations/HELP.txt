@@ -1,0 +1,75 @@
+# ProDoklad - Nápověda pro správu databázových migrací
+
+## Použití skriptu Upgrade_db.sh (doporučeno)
+
+Pro zjednodušení práce s migracemi používejte skript Upgrade_db.sh:
+
+1. Aktualizace databáze na nejnovější verzi:
+   ```
+   ./data/migrations/Upgrade_db.sh upgrade
+   ```
+
+2. Vytvoření nové migrace po změnách v modelech:
+   ```
+   ./data/migrations/Upgrade_db.sh create "popis změny"
+   ```
+
+3. Zobrazení aktuální verze databáze:
+   ```
+   ./data/migrations/Upgrade_db.sh current
+   ```
+
+4. Zobrazení historie migrací:
+   ```
+   ./data/migrations/Upgrade_db.sh history
+   ```
+
+5. Návrat o jednu verzi zpět:
+   ```
+   ./data/migrations/Upgrade_db.sh downgrade
+   ```
+
+6. Kontrola potřebných migrací:
+   ```
+   ./data/migrations/Upgrade_db.sh check
+   ```
+
+## Přímé použití Alembic příkazů
+
+Pokud potřebujete použít Alembic přímo:
+
+1. Vytvoření nové migrace po změně modelů:
+   ```
+   alembic revision --autogenerate -m "Popis změny"
+   ```
+
+2. Aplikace migrace na nejnovější verzi:
+   ```
+   alembic upgrade head
+   ```
+
+3. Návrat k předchozí verzi:
+   ```
+   alembic downgrade -1
+   ```
+
+4. Zobrazení aktuální verze:
+   ```
+   alembic current
+   ```
+
+5. Zobrazení historie migrací:
+   ```
+   alembic history
+   ```
+
+6. Zobrazení historie migrací v obráceném pořadí:
+   ```
+   alembic history --reverse
+   ```
+
+## Poznámky
+
+- Při přidání nových modelů do aplikace je potřeba je také přidat do souboru env.py
+- Alembic používá absolutní cestu k databázi v souboru alembic.ini
+- Soubor env.py importuje všechny SQLModel modely a nastavuje vztahy mezi nimi pomocí funkce nastav_vztahy()

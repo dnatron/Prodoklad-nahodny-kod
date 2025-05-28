@@ -1,0 +1,45 @@
+// Nastavení modálu pro slevu na položku
+setupItemDiscountModal() {
+  console.log("Inicializace modálu pro slevu na položku");
+  const modal = document.getElementById('polozka-sleva-modal');
+  if (!modal) {
+    console.error("Modál pro slevu na položku nebyl nalezen");
+    return;
+  }
+  
+  // Inicializace hodnoty indexu položky
+  const slevaPolozkaIdInput = document.getElementById('sleva-polozka-id');
+  if (slevaPolozkaIdInput) {
+    slevaPolozkaIdInput.value = '';
+  }
+  
+  // Event listener pro otevření modálu
+  modal.addEventListener('show.bs.modal', event => {
+    console.log("Otevření modálu pro slevu na položku", event);
+    const button = event.relatedTarget;
+    if (!button) {
+      console.error("Tlačítko, které otevřelo modál, nebylo nalezeno");
+      return;
+    }
+    
+    const polozkaIndex = button.getAttribute('data-polozka-id');
+    console.log("Index položky pro slevu:", polozkaIndex);
+    
+    // Kontrola, zda index existuje (včetně hodnoty '0')
+    if (polozkaIndex === null || polozkaIndex === undefined) {
+      console.error("Index položky nebyl nalezen v atributu data-polozka-id");
+      return;
+    }
+    
+    console.log("Nastavuji index položky na", polozkaIndex);
+    
+    // Nastavení indexu položky do skrytého pole
+    document.getElementById('sleva-polozka-id').value = polozkaIndex;
+    
+    // Reset hodnot
+    document.getElementById('polozka-sleva-hodnota').value = "0";
+    document.getElementById('polozka-sleva-typ').value = "procento";
+    
+    // Aktualizace informačního textu
+    this.updateItemDiscountInfoText();
+  });

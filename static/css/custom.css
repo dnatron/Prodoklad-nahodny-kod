@@ -1,0 +1,25 @@
+/* Custom styles */
+
+/* Make table rows clickable */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-pointer:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Prevent text selection on row click */
+.cursor-pointer td {
+    user-select: none;
+}
+
+/* Vypne v selectu pointer events, pokud je readonly */
+select[readonly]:-moz-read-only {
+    /* For Firefox */
+    pointer-events: none;
+  }
+  select[readonly]:read-only {
+    /* For other browsers */
+    pointer-events: none;
+  }

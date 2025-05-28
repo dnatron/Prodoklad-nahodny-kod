@@ -1,0 +1,492 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+/* Fix pro levý margin */
+#content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+}
+
+/* Ujistění, že carousel zająví plnou šíři */
+#carouselExampleIndicators {
+    width: 100%;
+}
+</style>
+
+{% if not request.session.get('user_id') %}
+<!-- Slider -->
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{{ url_for('static', path='img/index/slider/slide01.jpg') }}" class="d-block w-100" alt="Slide 1">
+        </div>
+        <div class="carousel-item">
+            <img src="{{ url_for('static', path='img/index/slider/slide02.jpg') }}" class="d-block w-100" alt="Slide 2">
+        </div>
+        <div class="carousel-item">
+            <img src="{{ url_for('static', path='img/index/slider/slide03.jpg') }}" class="d-block w-100" alt="Slide 3">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<!-- Obsah pro nes přihlášeného uživatele -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div id="ok-message">
+                {% if message %}
+                <div class="messages alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="display-12 mb-6"><img src="{{ url_for('static', path='img/logo01_200px.png') }}" alt="ProDoklad" width="200" height="30" class="d-inline-block align-top"></h1>
+                    <h2>fakturujte snadno, rychle a bezpečně.</h2>
+                    <p class="lead">
+                        Proč zrácet čas, když lze vše jednoduše automatizovat.
+                    </p>
+                    
+                    <div class="mt-4">
+                        <a href="/login" class="btn btn-primary me-2">Login</a>
+                        <a href="/register" class="btn btn-outline-primary">Register</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Layout pro přihlášeného uživatele -->
+<div class="container mt-5">
+    <!-- Slider -->
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{{ url_for('static', path='img/index/slider/slide01.jpg') }}" class="d-block w-100" alt="Slide 1">
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/index/slider/slide02.jpg') }}" class="d-block w-100" alt="Slide 2">
+            </div>
+            <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/index/slider/slide03.jpg') }}" class="d-block w-100" alt="Slide 3">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <!-- Obsah pro přihlášeného uživatele -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div id="ok-message">
+                {% if message %}
+                <div class="messages alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="card shadow">
+                <div class="card-body">
+                    <h1 class="display-6 mb-6">ProDoklad</h1><h2>fakturujte snadno, rychle a bezpečně.</h2>
+                    <p class="lead">
+                        Proč zrácet čas, když lze vše jednoduše automatizovat.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Všechny funkce zdarma - moderní design s tmavým pozadím -->
+<div class="py-5 bg-dark text-white rounded-3 mb-5">
+    <div class="container">
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10 text-center">
+                <h2 class="display-6 fw-bold text-white mb-4">Všechny hlavní funkce <span class="text-danger">ZDARMA</span> a to bez omezení</h2>
+                <p class="lead mb-4 text-warning">Žádné skryté poplatky, žádná omezení. Vše v jednom účtu s neomezeným počtem faktur, kontaktů, produktů, skladů, pokladen a uživatelů. u kterých si nastavíte práva kam mají přístup.</p>
+                <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+                    <span class="badge bg-success rounded-pill px-3 py-2 fs-6"><i class="bi bi-infinity me-1"></i> Neomezený počet kontaktů</span>
+                    <span class="badge bg-success rounded-pill px-3 py-2 fs-6"><i class="bi bi-infinity me-1"></i> Neomezený počet faktur</span>
+                    <span class="badge bg-success rounded-pill px-3 py-2 fs-6"><i class="bi bi-infinity me-1"></i> Neomezený počet uživatelů</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark shadow-lg hover-lift transition-300" style="box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1), 0 6px 6px rgba(255, 255, 255, 0.05) !important; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="feature-icon bg-primary bg-gradient text-white rounded-circle p-3 me-3" style="box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);">
+                                <i class="bi bi-receipt fs-4"></i>
+                            </div>
+                            <h3 class="h5 mb-0 text-warning">Fakturace bez limitů</h3>
+                        </div>
+                        <p class="card-text text-light">Vytvářejte neomezený počet faktur s automatickými výpočty DPH a zaokrouhlováním. Vlastní číslování, QR kódy pro platby a podpora exportů do všech účetních systémů.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark shadow-lg hover-lift transition-300" style="box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1), 0 6px 6px rgba(255, 255, 255, 0.05) !important; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="feature-icon bg-success bg-gradient text-white rounded-circle p-3 me-3" style="box-shadow: 0 0 15px rgba(25, 135, 84, 0.5);">
+                                <i class="bi bi-box-seam fs-4"></i>
+                            </div>
+                            <h3 class="h5 mb-0 text-warning">Neomezené sklady</h3>
+                        </div>
+                        <p class="card-text text-light">Spravujte libovolný počet skladů s automatickými pohyby při fakturaci. Přehledná evidence zásob, upozornění na nízký stav a detailní historie všech pohybů.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-dark shadow-lg hover-lift transition-300" style="box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1), 0 6px 6px rgba(255, 255, 255, 0.05) !important; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="feature-icon bg-info bg-gradient text-white rounded-circle p-3 me-3" style="box-shadow: 0 0 15px rgba(13, 202, 240, 0.5);">
+                                <i class="bi bi-cash-register fs-4"></i>
+                            </div>
+                            <h3 class="h5 mb-0 text-warning">Pokladny a prodejny</h3>
+                        </div>
+                        <p class="card-text text-light">Neomezený počet pokladen a prodejen s EET účtenkami. Propojení s čtečkami čárových kódů, denní uzávěrky a přehledy tržeb na jednom místě.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4 mt-3">
+            <div class="col-md-6">
+                <div class="card h-100 border-0 bg-dark shadow-lg hover-lift transition-300" style="box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1), 0 6px 6px rgba(255, 255, 255, 0.05) !important; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="feature-icon bg-warning bg-gradient text-white rounded-circle p-3 me-3" style="box-shadow: 0 0 15px rgba(255, 193, 7, 0.5);">
+                                <i class="bi bi-people fs-4"></i>
+                            </div>
+                            <h3 class="h5 mb-0 text-warning">Týmová spolupráce</h3>
+                        </div>
+                        <p class="card-text text-light">Přidejte neomezený počet uživatelů a nastavte jim různá oprávnění. Spravujte více firem pod jedním účtem a sdílejte přístup s účetními nebo kolegy.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100 border-0 bg-dark shadow-lg hover-lift transition-300" style="box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1), 0 6px 6px rgba(255, 255, 255, 0.05) !important; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.15);">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="feature-icon bg-danger bg-gradient text-white rounded-circle p-3 me-3" style="box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);">
+                                <i class="bi bi-gear-wide-connected fs-4"></i>
+                            </div>
+                            <h3 class="h5 mb-0 text-warning">Automatizace procesů</h3>
+                        </div>
+                        <p class="card-text text-light">Šetřete čas díky automatizaci rutinních úkolů. Intuitivní a snadné ovládání, které zvládne každý. Moderní rozhraní přizpůsobené všem zařízením.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-5 d-none">
+            <a href="/register" class="btn btn-primary btn-lg px-5 py-3 fw-bold" style="box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);">Vyzkoušet zdarma <i class="bi bi-arrow-right ms-2"></i></a>
+            <p class="text-light mt-2">Žádná platební karta není vyžadována</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-lift:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease;
+}
+.transition-300 {
+    transition: all 0.3s ease;
+}
+</style>
+
+<!-- Slideshow reklama -->
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center mb-4">
+            <h2 class="display-5 text-primary">Proč uživatelé milují ProDoklad</h2>
+            <p class="lead">Přečtěte si, co o naší aplikaci říkají naši klienti</p>
+        </div>
+        <div class="col-12">
+            <div id="reklamaCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#reklamaCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#reklamaCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#reklamaCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <button type="button" data-bs-target="#reklamaCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                </div>
+                <div class="carousel-inner">
+                    <!-- Slide 1 - Fakturace -->
+                    <div class="carousel-item active">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img src="{{ url_for('static', path='img/index/banner01.jpg') }}" class="d-block w-100" alt="Fakturace">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h2 class="display-6 mb-3 text-warning">Fakturace nikdy nebyla jednodušší</h2>
+                                        <p class="lead">
+                                            "ProDoklad mi ušetřil hodiny práce. Stačí zadat název odběratele a systém sám nabídne relevantní položky podle dostupnosti na skladě. Automatická rezervace zboží na skladě při vytvoření faktury je naprostá bomba!"
+                                        </p>
+                                        <p class="text-end fst-italic">- Petr Novák, majitel mlinárny</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 - Sklady a finance -->
+                    <div class="carousel-item">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h2 class="display-6 mb-3 text-warning">Konečně mám přehled o svém podnikání</h2>
+                                        <p class="lead">
+                                            "Díky ProDokladu mám dokonalý přehled o svých skladových zásobách na všech pobočkách. Mohu sledovat pohyby zboží i financí včetně informací o tom, kdo a kdy změny provedl. Tohle je přesně to, co jsem potřeboval!"
+                                        </p>
+                                        <p class="text-end fst-italic">- Jan Svoboda, majitel řetězce řeznictví</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <img src="{{ url_for('static', path='img/index/banner02.jpg') }}" class="d-block w-100" alt="Sklady a finance">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 3 - Daňová evidence -->
+                    <div class="carousel-item">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img src="{{ url_for('static', path='img/index/banner03.jpg') }}" class="d-block w-100" alt="Daňová evidence">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h2 class="display-6 mb-3 text-warning">Jednoduchá daňová evidence</h2>
+                                        <p class="lead">
+                                            "ProDoklad mi pomohl zjednodušit daňovou evidenci a ušetřit náklady. Díky přehledným reportům a automatickým výpočtům DPH jsem mohl snížit čas strávený administrativou a více se věnovat svému podnikání."
+                                        </p>
+                                        <p class="text-end fst-italic">- Jana Nová, majitelka Pekárny</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 4 - Recenze od Elišky Vávrové -->
+                    <div class="carousel-item">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img src="{{ url_for('static', path='img/index/banner04.jpg') }}" class="d-block w-100" alt="Recenze od Elišky Vávrové">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h2 class="display-6 mb-3 text-warning">Vše v jednom systému</h2>
+                                        <p class="lead">
+                                            "ProDoklad mi ušetřil spoustu času při vedení účetnictví. Oceňuji především přehledné zobrazení skladových zásob a jednoduchou fakturaci. Díky automatickým skladovým pohybům mám vždy aktuální informace o stavu zboží."
+                                        </p>
+                                        <p class="text-end fst-italic">- Eliška Vávrová, pěstitelka zeleniny</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="carousel-control-prev" type="button" data-bs-target="#reklamaCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Předchozí</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#reklamaCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Další</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ceník -->
+<section class="pricing-section bg-dark text-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 text-light">Ceník</h2>
+        
+        <div class="row">
+            <!-- Free Plan -->
+            <div class="col-md-4">
+                <div class="panel panel-dark text-center pricing-panel">
+                    <div class="panel-heading bg-dark">
+                        <h3 class="panel-title text-warning">Zdarma</h3>
+                    </div>
+                    <div class="panel-body bg-dark">
+                        <h3 class="price text-success">0 Kč</h3>
+                        <ul class="list-unstyled">
+                            <li><h4 class="text-warning"><i class="bi bi-check"></i> Plná verze<br> bez omezení</h4></li>
+                            <li><h4 class="text-info"><i class="bi bi-building"></i> Služby:</h4></li>
+                            <li><h5 class="text-danger"><i class="bi bi-download"></i> Export dat NE</h4></li>
+                            <li><h5 class="text-danger"><i class="bi bi-download"></i> Import dat NE</li>
+                            <li><h5 class="text-danger"><i class="bi bi-download"></i> Zálohování NE</h4></li>
+                        </ul>
+                        <button class="btn btn-outline-light"
+                                hx-post="/ceník">
+                            Detail
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="col-md-4">
+                <div class="panel panel-dark text-center pricing-panel">
+                    <div class="panel-heading bg-dark">
+                        <h3 class="panel-title">Standard</h3>
+                    </div>
+                    <div class="panel-body bg-dark">
+                        <h3 class="price text-light">240 Kč</h3>
+                        <ul class="list-unstyled">
+                            <li><h4 class="text-warning"><i class="bi bi-check"></i> Plná verze<br> bez omezení</h4></li>
+                            <li><h4 class="text-info"><i class="bi bi-building"></i> Služby:</h4></li>
+                            <li><h5 class="text-success"><i class="bi bi-download"></i> Export dat ANO</h4></li>
+                            <li><h5 class="text-success"><i class="bi bi-download"></i> Import dat ANO</li>
+                            <li><h5 class="text-danger"><i class="bi bi-download"></i> Zálohování NE</h4></li>
+                        </ul>
+                        <button class="btn btn-outline-light"
+                                hx-post="/ceník">
+                            Detail
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Plan -->
+            <div class="col-md-4">
+                <div class="panel panel-dark text-center pricing-panel highlight">
+                    <div class="panel-heading bg-primary">
+                        <h3 class="panel-title">Premium</h3>
+                        <span class="label label-warning">Nejoblíbenější</span>
+                    </div>
+                    <div class="panel-body bg-dark">
+                        <h3 class="price text-light">690 Kč</h3>
+                        <ul class="list-unstyled">
+                            <li><h4 class="text-warning"><i class="bi bi-check"></i> Plná verze<br> bez omezení</h4></li>
+                            <li><h4 class="text-info"><i class="bi bi-building"></i> Služby:</h4></li>
+                            <li><h5 class="text-success"><i class="bi bi-download"></i> Export dat ANO</h4></li>
+                            <li><h5 class="text-success"><i class="bi bi-download"></i> Import dat ANO</li>
+                            <li><h5 class="text-success"><i class="bi bi-download"></i> Zálohování ANO</h4></li>
+                        </ul>
+                        <button class="btn btn-primary"
+                                hx-post="/ceník">
+                            Detail
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.pricing-section {
+    background-color: #212529;
+    padding: 60px 0;
+}
+
+.pricing-panel {
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 15px rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.1);
+    background-color: #212529;
+}
+
+.pricing-panel:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(255,255,255,0.15);
+}
+
+.pricing-panel.highlight {
+    border: 1px solid rgba(0,123,255,0.5);
+}
+
+.panel-heading {
+    position: relative;
+    padding: 25px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.panel-body {
+    padding: 30px 20px;
+}
+
+.price {
+    font-size: 42px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.label-warning {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 12px;
+    padding: 5px 10px;
+    background-color: #ffc107;
+    color: #000;
+}
+
+.list-unstyled li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+.list-unstyled li:last-child {
+    border-bottom: none;
+}
+
+.btn {
+    margin-top: 25px;
+    padding: 10px 30px;
+    font-weight: 600;
+}
+
+.glyphicon-ok {
+    margin-right: 8px;
+}
+</style>
+{% endblock %}
