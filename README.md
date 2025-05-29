@@ -6,11 +6,11 @@ V adresáři data/migrations:
 se nachází ukázka kodu pro vytvoření databáze a alembic migrací a ukázka kodu pro inicializaci databáze s testovacími daty(po smazání databáze).
 
 V dresáři routers:
-je  ukázka kodu pro vytvoření endpointu.
+je ukázka kodu pro vytvoření endpointu.
 
 V adresáři static: je javascript, css soubory a obrázky.
 
-V adresáři templates se nachází 
+V adresáři templates se nachází
 šablony ninja2, bootstrap pro frontend .
 
 V adresáři models se nachází ukázka kodu pro vytvoření ORM modelu na bázi SQLModel.
